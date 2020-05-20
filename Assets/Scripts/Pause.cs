@@ -13,7 +13,7 @@ public class Pause : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            GameObject.FindObjectOfType<GridManager>().Restart();
+            //GameObject.FindObjectOfType<GridManager>().Restart();
         }
     }
 }
