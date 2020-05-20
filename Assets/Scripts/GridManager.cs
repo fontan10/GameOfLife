@@ -2,69 +2,66 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 
 public class GridManager : MonoBehaviour
 {
-    public Sprite sprite;
+    public float speed = 3;
 
-    [Range(10, 100)]
-    public int resolution; // number of squares in the x
+    [Range(5, 200), SerializeField]
+    private int resolution = 100; // number of squares in the x
 
-    private GameObject[,] tileGrid;
-    private bool[,] aliveGrid, newAliveGrid;
+    [SerializeField]
+    public Sprite _sprite;
 
-    private int columns, rows;
-    private float screenWidth, screenHeight;
-    private float tileWidth, tileHeight;
+    private GameObject _tiles;
+
+    private GameObject[,] _tileGrid;
+    private bool[,] _aliveGrid, _newAliveGrid;
+
+    private int _columns, _rows;
+    private float _screenWidth, _screenHeight;
+    private float _tileWidth, _tileHeight;
 
     // Start is called before the first frame update
     void Start()
     {
-        (tileGrid, aliveGrid) = CreateGrids();
-        newAliveGrid = new bool[columns, rows];
+        CreateGrids();
 
-        InvokeRepeating("UpdateGrids", 0.2f, 0.2f);
+        InvokeRepeating("UpdateGrids", speed, speed);
+    }
+
+    public void Restart()
+    {
+        Destroy(_tiles);
+
+        CreateGrids();
     }
 
     private void UpdateGrids()
     {
-        UpdateAliveGrid();
-        UpdateTileGrid();
-    }
-
-    private void UpdateTileGrid()
-    {
-        for (int i = 0; i < columns; ++i)
+        for (int i = 0; i < _columns; ++i)
         {
-            for (int j = 0; j < rows; ++j)
-            {
-                tileGrid[i, j].GetComponent<SpriteRenderer>().color = aliveGrid[i, j] ? Color.yellow : Color.black;
-            }
-        }
-    }
-
-    private void UpdateAliveGrid()
-    {
-        // Go through the aliveGrid and insert the new states in newAliveGrid
-        for (int i = 0; i < columns; ++i)
-        {
-            for(int j = 0; j < rows; ++j)
+            for (int j = 0; j < _rows; ++j)
             {
                 int numAliveNeighbours = FindNumberAliveNeighbours(i, j);
 
-                if (aliveGrid[i, j])
+                if (_aliveGrid[i, j])
                 {
-                    newAliveGrid[i, j] = numAliveNeighbours == 2 || numAliveNeighbours == 3;
+                    _newAliveGrid[i, j] = numAliveNeighbours == 2 || numAliveNeighbours == 3;
                 }
                 else
                 {
-                    newAliveGrid[i, j] = numAliveNeighbours == 3;
+                    _newAliveGrid[i, j] = numAliveNeighbours == 3;
                 }
+
+
+                _tileGrid[i, j].GetComponent<SpriteRenderer>().color = _newAliveGrid[i, j] ? Color.yellow : Color.black;
             }
         }
 
-        aliveGrid = newAliveGrid;
+        var temp = _aliveGrid;
+        _aliveGrid = _newAliveGrid;
+        _newAliveGrid = temp;
     }
 
     private int FindNumberAliveNeighbours(int x, int y)
@@ -74,62 +71,69 @@ public class GridManager : MonoBehaviour
         {
             for(int j = -1; j < 2; ++j)
             {
-                int row = (x + i + rows) % rows;
-                int col = (y + j + columns) % columns;
-                if(aliveGrid[col, row])
+                int col = (x + j + _columns) % _columns;
+                int row = (y + i + _rows) % _rows;
+
+                if(_aliveGrid[col, row])
                 {
                     numAliveNeighbours++;
                 }
             }
         }
 
-        return numAliveNeighbours - Convert.ToInt32(aliveGrid[x, y]);
+        if (_aliveGrid[x, y])
+        {
+            numAliveNeighbours--;
+        }
+
+        return numAliveNeighbours;
     }
 
-    private (GameObject[,], bool[,]) CreateGrids()
+    private void CreateGrids()
     {
-        rows = resolution;
-        columns = (int)(rows * Camera.main.aspect);
+        _columns = resolution;
+        _rows = (int)(_columns / Camera.main.aspect);
 
-        screenHeight = Camera.main.orthographicSize * 2;
-        screenWidth = Camera.main.aspect * screenHeight;
+        _screenHeight = Camera.main.orthographicSize * 2;
+        _screenWidth = Camera.main.aspect * _screenHeight;
 
-        tileWidth = screenWidth / columns;
-        tileHeight = screenHeight / rows;
+        _tileWidth = _screenWidth / _columns;
+        _tileHeight = _screenHeight / _rows;
 
-        var tileGrid = new GameObject[columns, rows];
-        var aliveGrid = new bool[columns, rows];
+        _tileGrid = new GameObject[_columns, _rows];
+        _aliveGrid = new bool[_columns, _rows];
+        _newAliveGrid = new bool[_columns, _rows];
 
-        for (int i = 0; i < columns; ++i)
+        _tiles = new GameObject("Tiles");
+
+        for (int i = 0; i < _columns; ++i)
         {
-            for (int j = 0; j < rows; ++j)
+            for (int j = 0; j < _rows; ++j)
             {
                 bool alive = UnityEngine.Random.Range(0, 2) == 1;
 
-                aliveGrid[i, j] = alive;
+                _aliveGrid[i, j] = alive;
 
-                float x = (i + 0.5f) * tileWidth - screenWidth / 2;
-                float y = (j + 0.5f) * tileHeight - screenHeight / 2;
+                float x = (i + 0.5f) * _tileWidth - _screenWidth / 2;
+                float y = (j + 0.5f) * _tileHeight - _screenHeight / 2;
 
-                tileGrid[i, j] = CreateTile(x, y, alive);
+                _tileGrid[i, j] = CreateTile(x, y, alive, i, j);
             }
         }
-
-        return (tileGrid, aliveGrid);
     }
 
     // Creates a tile GameObject at (x,y)
-    private GameObject CreateTile(float x, float y, bool alive)
+    private GameObject CreateTile(float x, float y, bool alive, int i, int j)
     {
-        var gameObject = new GameObject("(" + x + ", " + y + ")");
+        var gameObject = new GameObject("(" + i + ", " + j + ")");
         gameObject.transform.position = new Vector3(x, y);
-        gameObject.transform.localScale = new Vector3(tileWidth, tileHeight, 1);
+        gameObject.transform.localScale = new Vector3(_tileWidth, _tileHeight, 1);
 
         var spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
-        spriteRenderer.sprite = sprite;
+        spriteRenderer.sprite = _sprite;
         spriteRenderer.color = alive ? Color.yellow : Color.black;
 
-        gameObject.transform.SetParent(GameObject.Find("Tiles").transform);
+        gameObject.transform.SetParent(_tiles.transform);
 
         return gameObject;
     }
