@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 
-public interface IGridManagerable<TAlive>
+public interface IGridManagerable
 {
     int Resolution { get; set; } // number of squares in the x
-
     Sprite TileSprite { get; set; }
     GameObject Tiles { get; set; }
 

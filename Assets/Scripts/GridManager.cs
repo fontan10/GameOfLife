@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class GridManager<TAlive> : IGridManagerable<TAlive>
+public abstract class GridManager<TAlive> : IGridManagerable
 {
     public float Speed { get; set; }
     public int Resolution { get; set; }
@@ -24,6 +24,7 @@ public abstract class GridManager<TAlive> : IGridManagerable<TAlive>
         screenWidth = Camera.main.aspect * screenHeight;
         tileWidth = screenWidth / columns;
         tileHeight = screenHeight / rows;
+        AliveGrid = new TAlive[columns, rows];
     }
 
     protected int FindNumberAliveNeighbours(int x, int y, int numColumns, int numRows)

@@ -15,7 +15,6 @@ public class MonoColourGridManager : GridManager<bool>
         InitializeVariables();
 
         _tileGrid = new GameObject[columns, rows];
-        AliveGrid = new bool[columns, rows];
         _newAliveGrid = new bool[columns, rows];
 
         Tiles = new GameObject("Tiles");
@@ -49,14 +48,7 @@ public class MonoColourGridManager : GridManager<bool>
             {
                 int numAliveNeighbours = FindNumberAliveNeighbours(i, j, columns, rows);
 
-                if (AliveGrid[i, j])
-                {
-                    _newAliveGrid[i, j] = numAliveNeighbours == 2 || numAliveNeighbours == 3;
-                }
-                else
-                {
-                    _newAliveGrid[i, j] = numAliveNeighbours == 3;
-                }
+                _newAliveGrid[i, j] = numAliveNeighbours == 3 || (AliveGrid[i, j] && numAliveNeighbours == 2);
 
                 _tileGrid[i, j].GetComponent<SpriteRenderer>().color = ChooseColor(_newAliveGrid[i, j]);
             }
