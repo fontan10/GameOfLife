@@ -60,7 +60,7 @@ public class PolyColourGridManager : GridManager<int>
                 if(numAliveNeighbours == 3 ||
                         (AliveGrid[i, j] !=0 && numAliveNeighbours == 2))
                 {
-                    _newAliveGrid[i, j]++;
+                    _newAliveGrid[i, j] = AliveGrid[i, j] + 1;
                 }
                 else
                 {
@@ -76,4 +76,15 @@ public class PolyColourGridManager : GridManager<int>
         _newAliveGrid = temp;
     }
 
+    public override void SetAlive(int col, int row)
+    {
+        AliveGrid[col, row] = 1;
+        _tileGrid[col, row].GetComponent<SpriteRenderer>().color = ChooseColor(AliveGrid[col, row]);
+    }
+
+    public override void SetDead(int col, int row)
+    {
+        AliveGrid[col, row] = 0;
+        _tileGrid[col, row].GetComponent<SpriteRenderer>().color = ChooseColor(AliveGrid[col, row]);
+    }
 }

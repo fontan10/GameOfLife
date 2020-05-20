@@ -8,4 +8,6 @@ public interface IGridManagerable
 
     void UpdateGrids();
     void CreateGrids();
+    void SetAlive(int col, int row);
+    void SetDead(int col, int row);
 }

@@ -16,6 +16,9 @@ public abstract class GridManager<TAlive> : IGridManagerable
     protected int columns, rows;
     protected float screenHeight, screenWidth, tileWidth, tileHeight;
 
+    public abstract void SetAlive(int col, int row);
+    public abstract void SetDead(int col, int row);
+
     protected virtual void InitializeVariables()
     {
         columns = Resolution;
@@ -67,4 +70,5 @@ public abstract class GridManager<TAlive> : IGridManagerable
 
         return gameObject;
     }
+
 }

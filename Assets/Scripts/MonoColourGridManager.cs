@@ -58,4 +58,16 @@ public class MonoColourGridManager : GridManager<bool>
         AliveGrid = _newAliveGrid;
         _newAliveGrid = temp;
     }
+
+    public override void SetAlive(int col, int row)
+    {
+        AliveGrid[col, row] = true;
+        _tileGrid[col, row].GetComponent<SpriteRenderer>().color = ChooseColor(AliveGrid[col, row]);
+    }
+
+    public override void SetDead(int col, int row)
+    {
+        AliveGrid[col, row] = false;
+        _tileGrid[col, row].GetComponent<SpriteRenderer>().color = ChooseColor(AliveGrid[col, row]);
+    }
 }
