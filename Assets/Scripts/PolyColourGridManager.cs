@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Creates grid of <c>TileSprite</c>s colored depending on how
+/// long they've been alive
+/// </summary>
 public class PolyColourGridManager : GridManager<int>
 {
     private GameObject[,] _tileGrid;
     private int[,] _newAliveGrid;
+
 
     protected override Color ChooseColor(int alive)
     {

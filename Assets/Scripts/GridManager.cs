@@ -2,22 +2,30 @@
 
 public abstract class GridManager<TAlive> : IGridManagerable
 {
-    public float Speed { get; set; }
+    /// <summary> Number of TileSprites in the x direction. </summary>
     public int Resolution { get; set; }
-    public GameObject Tiles { get; set; }
+
+    /// <summary> Sprite to be displayed when Tile is alive. </summary>
     public Sprite TileSprite { get; set; }
+
+    /// <summary>
+    /// 2d Array holding the alive state of the tiles currently on screen.
+    /// </summary>
     protected TAlive[,] AliveGrid { get; set; }
 
+    public GameObject Tiles { get; set; }
     public abstract void CreateGrids();
     public abstract void UpdateGrids();
-    protected abstract Color ChooseColor(TAlive alive);
-    protected abstract bool IsAlive(TAlive alive);
+    public abstract void SetAlive(int col, int row);
+    public abstract void SetDead(int col, int row);
+
 
     protected int columns, rows;
     protected float screenHeight, screenWidth, tileWidth, tileHeight;
 
-    public abstract void SetAlive(int col, int row);
-    public abstract void SetDead(int col, int row);
+
+    protected abstract Color ChooseColor(TAlive alive);
+    protected abstract bool IsAlive(TAlive alive);
 
     protected virtual void InitializeVariables()
     {
@@ -30,6 +38,15 @@ public abstract class GridManager<TAlive> : IGridManagerable
         AliveGrid = new TAlive[columns, rows];
     }
 
+    /// <summary>
+    /// Returns the number of alive neighbours beside the <c>TileSprite</c>
+    /// at (x, y).
+    /// </summary>
+    /// <param name="x">x grid position</param>
+    /// <param name="y">y grid position</param>
+    /// <param name="numColumns">number of columns in the grid</param>
+    /// <param name="numRows">number of rows in the grid</param>
+    /// <returns>number of alive neighbours</returns>
     protected int FindNumberAliveNeighbours(int x, int y, int numColumns, int numRows)
     {
         int numAliveNeighbours = 0;
@@ -55,7 +72,11 @@ public abstract class GridManager<TAlive> : IGridManagerable
         return numAliveNeighbours;
     }
 
-    // Creates a tile GameObject at (x,y)
+    /// <summary>
+    /// Creates a <c>Tile</c> <c>GameObject</c> named "(i, j)" at 
+    /// screen pixel (<c>x</c>,<c>y</c>) and sets it to <c>alive</c>.
+    /// </summary>
+    /// <returns> The GameObject created </returns>
     protected GameObject CreateTile(float x, float y, TAlive alive, int i, int j)
     {
         var gameObject = new GameObject("(" + i + ", " + j + ")");

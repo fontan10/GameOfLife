@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Creates grid of <c>TileSprite</c>s colored yellow and black
+/// when alive and dead, respectively
+/// </summary>
 public class MonoColourGridManager : GridManager<bool>
 {
     private GameObject[,] _tileGrid;
     private bool[,] _newAliveGrid;
+
 
     protected override Color ChooseColor(bool alive)
     {
