@@ -1,6 +1,6 @@
 * text=auto
 
-*.shader linguist-detectable=false
+*.shader linguist-vendored
 
 # Unity files
 *.meta -text merge=unityyamlmerge diff
