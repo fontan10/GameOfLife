@@ -1,11 +1,12 @@
 # Game of Life
-John Conway's cellular automation Game of Life written in C# with Unity.
+<p>John Conway's cellular automation Game of Life written in C# with Unity.</p>
 
 <p align="center">
   <img width="640" height="360" src="https://imgur.com/68TZ2p8.gif">
 </p>
 
 > Tags: C#, Unity
+<p><b>Program logic is in GameOfLife/Assets/Scripts</b></p>
 
 </br>
 
