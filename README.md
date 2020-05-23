@@ -152,6 +152,8 @@ the two using the 'Colour' button at the bottom.</p>
   <img width="325" height="55" src="https://imgur.com/7nkuoxl.png"> <img width="325" height="55" src="https://imgur.com/3U8imOf.png">
 </p>
 
+- Click on screen to set the cells alive. If you don't see them come alive, try pausing the game or lowering the frames/s before you click on the screen.
+
 </br>
 
 ## Extending the Code
